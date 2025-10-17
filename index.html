@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Car Price Estimator</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom animation for results appearing */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        /* Gradient for the button */
+        .btn-gradient {
+            background-image: linear-gradient(to right, #4f46e5, #818cf8);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <main class="bg-white w-full max-w-3xl rounded-2xl shadow-xl overflow-hidden">
+        <div class="p-8 md:p-12">
+            <!-- Header Section -->
+            <header class="text-center mb-8">
+                <div class="inline-block bg-indigo-100 p-3 rounded-full mb-4">
+                    <svg class="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6a2 2 0 012 2v8a2 2 0 01-2 2H9a2 2 0 01-2-2V9a2 2 0 012-2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7V5a2 2 0 00-2-2H9a2 2 0 00-2 2v2"></path><path stroke-linecap="round" stroke-linejoin="round" d="M12 17.5A2.5 2.5 0 019.5 15V13"></path></svg>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800">AI Car Price Estimator</h1>
+                <p class="text-gray-500 mt-2">Get an instant price prediction with our trained ML model.</p>
+            </header>
+
+            <!-- Prediction Form -->
+            <form id="prediction-form" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="year" class="block text-sm font-semibold text-gray-700">Year</label>
+                        <input type="number" id="year" name="year" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="e.g., 2018">
+                    </div>
+                    <div>
+                        <label for="odometer" class="block text-sm font-semibold text-gray-700">Odometer (Miles)</label>
+                        <input type="number" id="odometer" name="odometer" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="e.g., 50000">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="manufacturer" class="block text-sm font-semibold text-gray-700">Manufacturer</label>
+                        <select id="manufacturer" name="manufacturer" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="condition" class="block text-sm font-semibold text-gray-700">Condition</label>
+                        <select id="condition" name="condition" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="cylinders" class="block text-sm font-semibold text-gray-700">Cylinders</label>
+                        <select id="cylinders" name="cylinders" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="fuel" class="block text-sm font-semibold text-gray-700">Fuel</label>
+                        <select id="fuel" name="fuel" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="title_status" class="block text-sm font-semibold text-gray-700">Title Status</label>
+                        <select id="title_status" name="title_status" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="transmission" class="block text-sm font-semibold text-gray-700">Transmission</label>
+                        <select id="transmission" name="transmission" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="type" class="block text-sm font-semibold text-gray-700">Car Type</label>
+                    <select id="type" name="type" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" id="submit-button" class="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-lg font-medium text-white btn-gradient focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <span id="button-text">Predict Price</span>
+                        <svg id="spinner" class="animate-spin h-5 w-5 text-white hidden ml-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Result Display Area -->
+            <div id="result-area" class="mt-10 text-center hidden">
+                <p class="text-gray-600">Estimated Market Value:</p>
+                <p id="predicted-price" class="text-5xl font-bold text-indigo-600 mt-2"></p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- DATA FOR DROPDOWNS ---
+        const dropdownOptions = {
+            manufacturer: ['acura', 'alfa-romeo', 'aston-martin', 'audi', 'bmw', 'buick', 'cadillac', 'chevrolet', 'chrysler', 'datsun', 'dodge', 'ferrari', 'fiat', 'ford', 'gmc', 'harley-davidson', 'honda', 'hyundai', 'infiniti', 'jaguar', 'jeep', 'kia', 'land rover', 'lexus', 'lincoln', 'mazda', 'mercedes-benz', 'mercury', 'mini', 'mitsubishi', 'nissan', 'pontiac', 'porsche', 'ram', 'rover', 'saturn', 'subaru', 'tesla', 'toyota', 'volkswagen', 'volvo'],
+            condition: ['excellent', 'fair', 'good', 'like new', 'new', 'salvage'],
+            cylinders: ['10 cylinders', '12 cylinders', '3 cylinders', '4 cylinders', '5 cylinders', '6 cylinders', '8 cylinders', 'other'],
+            fuel: ['diesel', 'electric', 'gas', 'hybrid', 'other'],
+            title_status: ['clean', 'lien', 'missing', 'parts only', 'rebuilt', 'salvage'],
+            transmission: ['automatic', 'manual', 'other'],
+            type: ['SUV', 'bus', 'convertible', 'coupe', 'hatchback', 'mini-van', 'offroad', 'other', 'pickup', 'sedan', 'truck', 'van', 'wagon']
+        };
+
+        // --- DYNAMICALLY POPULATE DROPDOWNS ---
+        function populateDropdowns() {
+            for (const [id, options] of Object.entries(dropdownOptions)) {
+                const selectElement = document.getElementById(id);
+                if (selectElement) {
+                    const defaultOption = document.createElement('option');
+                    defaultOption.textContent = `Select a ${id.replace('_', ' ')}...`;
+                    defaultOption.disabled = true;
+                    defaultOption.selected = true;
+                    selectElement.appendChild(defaultOption);
+
+                    options.forEach(option => {
+                        const opt = document.createElement('option');
+                        opt.value = option;
+                        opt.textContent = option.charAt(0).toUpperCase() + option.slice(1);
+                        selectElement.appendChild(opt);
+                    });
+                }
+            }
+        }
+        
+        // --- FORM SUBMISSION LOGIC ---
+        const form = document.getElementById('prediction-form');
+        const resultArea = document.getElementById('result-area');
+        const predictedPrice = document.getElementById('predicted-price');
+        const submitButton = document.getElementById('submit-button');
+        const buttonText = document.getElementById('button-text');
+        const spinner = document.getElementById('spinner');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // Show loading state
+            buttonText.textContent = 'Predicting...';
+            spinner.classList.remove('hidden');
+            submitButton.disabled = true;
+            resultArea.classList.add('hidden');
+
+            const formData = new FormData(form);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                 data[key] = (key === 'year' || key === 'odometer') ? Number(value) : value;
+            }
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+                
+                const result = await response.json();
+
+                if (response.ok) {
+                    const price = Math.round(result.predicted_price);
+                    predictedPrice.textContent = `$${price.toLocaleString()}`;
+                } else {
+                    predictedPrice.textContent = `Error: ${result.error || 'Prediction failed'}`;
+                }
+
+            } catch (error) {
+                predictedPrice.textContent = 'Error: Could not connect to server.';
+                console.error('Fetch error:', error);
+            } finally {
+                // Restore button state
+                buttonText.textContent = 'Predict Price';
+                spinner.classList.add('hidden');
+                submitButton.disabled = false;
+                
+                // Show result with animation
+                resultArea.classList.remove('hidden');
+                resultArea.classList.add('fade-in');
+            }
+        });
+
+        // --- INITIALIZE THE PAGE ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateDropdowns();
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
