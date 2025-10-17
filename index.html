@@ -184,11 +184,12 @@
             const formData = new FormData(form);
             const data = {};
             for (let [key, value] of formData.entries()) {
-                 data[key] = (key === 'year' || key === 'odometer') ? Number(value) : value;
+                data[key] = (key === 'year' || key === 'odometer') ? Number(value) : value;
             }
 
             try {
-                const response = await fetch('http://127.0.0.1:5000/predict', {
+                // IMPORTANT: THIS IS THE LINE YOU NEED TO CHANGE
+                const response = await fetch('https://ai-car-price-estimator.onrender.com/predict', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data),
@@ -225,9 +226,4 @@
     </script>
 </body>
 </html>
-
-
-
-
-
 
